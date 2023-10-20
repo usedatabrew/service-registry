@@ -20,7 +20,7 @@ type ServiceRegistry struct {
 	serviceId int
 }
 
-func Register(host string, serviceId int) {
+func Register(host string, serviceId int) *ServiceRegistry {
 	once.Do(func() {
 		client, err := clientv3.New(clientv3.Config{
 			Endpoints:   []string{host},
@@ -34,6 +34,8 @@ func Register(host string, serviceId int) {
 			serviceId: serviceId,
 		}
 	})
+
+	return serviceRegistry
 }
 
 func Client() *ServiceRegistry {
@@ -43,7 +45,7 @@ func Client() *ServiceRegistry {
 func (s *ServiceRegistry) Start() {
 	for {
 		value := "ready"
-		ttl := 15 // 60 seconds
+		ttl := 15
 
 		// Create a lease with the desired TTL
 		leaseResp, err := s.client.Grant(context.Background(), int64(ttl))
@@ -62,7 +64,7 @@ func (s *ServiceRegistry) Start() {
 }
 
 func (s *ServiceRegistry) PublishEvent(event string) {
-	ttl := 15 // 60 seconds
+	ttl := 15
 
 	// Create a lease with the desired TTL
 	leaseResp, err := s.client.Grant(context.Background(), int64(ttl))
