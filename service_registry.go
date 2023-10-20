@@ -12,7 +12,7 @@ import (
 var (
 	serviceRegistry    *ServiceRegistry
 	once               sync.Once
-	serviceKeyTemplate = "/dataflows/%s"
+	serviceKeyTemplate = "/service/%s"
 )
 
 type ServiceRegistry struct {
